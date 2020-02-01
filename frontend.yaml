@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-docker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-docker
+  template:
+    metadata:
+      labels:
+        app: react-docker
+    spec:
+      containers:
+        - name: react-docker
+          image: guanw0826/react-docker:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service # Type of kubernetes resource
+metadata:
+  name: react-docker-app # Unique name of the resource
+spec:
+  selector:
+    app: react-docker
+  type: NodePort # Expose the Pods by opening a port on each Node and proxying it to the service.
+  ports: # Take incoming HTTP requests on port 8081 and forward them to the targetPort of 8081
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 31000
